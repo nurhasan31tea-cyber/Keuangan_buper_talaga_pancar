@@ -228,6 +228,18 @@
                 <h3 class="text-base font-bold text-white">Tambah Entri Operasional Baru</h3>
                 <button onclick="tutupModalEntri()" class="text-zinc-400 hover:text-white">✕</button>
             </div>
+
+            <!-- TOMBOL AKSES PISAH KAS DARI ENTRI DATA -->
+            <div class="bg-zinc-900 border border-zinc-800 p-3.5 rounded-xl mb-4 flex items-center justify-between">
+                <div>
+                    <div class="text-xs font-bold text-white">Kelola Kas Manual (Harian / Camping)</div>
+                    <div class="text-[11px] text-zinc-400">Tambah kas masuk terpisah dari entri harian</div>
+                </div>
+                <button type="button" onclick="bukaModalKasManualDariEntri()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3 py-2 rounded-lg transition">
+                    Pilih Kategori Kas →
+                </button>
+            </div>
+
             <form id="form-entri" onsubmit="simpanEntri(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs text-zinc-400 mb-1">Tanggal Transaksi</label>
@@ -408,6 +420,18 @@
             renderListKasManualModal();
             document.getElementById('modal-kas-manual').classList.remove('hidden');
         }
+
+        // Fungsi khusus membuka modal kas manual dari dalam modal entri baru
+        function bukaModalKasManualDesain() {
+            // Sembunyikan modal entri sementara atau biarkan tertumpuk rapi
+            renderListKasManualModal();
+            document.getElementById('modal-kas-manual').classList.remove('hidden');
+        }
+
+        function bukaModalKasManualDariEntri() {
+            bukaModalKasManualDesain();
+        }
+
         function tutupModalKasManual() { document.getElementById('modal-kas-manual').classList.add('hidden'); }
 
         function bukaModalTenda() { 
