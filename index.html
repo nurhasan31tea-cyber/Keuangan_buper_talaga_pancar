@@ -275,7 +275,14 @@
                     <input type="date" id="kas-tanggal" required class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
                 </div>
                 <div>
-                    <label class="block text-xs text-zinc-400 mb-1">Keterangan / Sumber Kas</label>
+                    <label class="block text-xs text-zinc-400 mb-1">Kategori Sumber Kas</label>
+                    <select id="kas-kategori" class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
+                        <option value="Uang Kas Harian">Uang Kas Harian</option>
+                        <option value="Uang Kas Camping">Uang Kas Camping</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-zinc-400 mb-1">Keterangan / Catatan</label>
                     <input type="text" id="kas-ket" placeholder="Contoh: Tambahan modal / Bantuan operasional" required class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
                 </div>
                 <div>
@@ -361,7 +368,7 @@
 
     <!-- SCRIPT APLIKASI -->
     <script>
-        let appData = JSON.parse(localStorage.getItem('buper_data_v4')) || {
+        let appData = JSON.parse(localStorage.getItem('buper_data_v5')) || {
             saldoAwal: 4300000,
             transaksi: [],
             sharingList: [],
@@ -439,10 +446,11 @@
         function simpanKasManual(e) {
             e.preventDefault();
             const tanggal = document.getElementById('kas-tanggal').value;
+            const kategori = document.getElementById('kas-kategori').value;
             const ket = document.getElementById('kas-ket').value;
             const nominal = parseFloat(document.getElementById('kas-nominal').value) || 0;
 
-            appData.kasManualList.push({ id: Date.now(), tanggal, ket, nominal });
+            appData.kasManualList.push({ id: Date.now(), tanggal, kategori, ket, nominal });
             saveAndRender();
             renderListKasManualModal();
             document.getElementById('form-kas-manual').reset();
@@ -464,7 +472,7 @@
             container.innerHTML = appData.kasManualList.map(k => `
                 <div class="bg-[#121212] p-3 rounded-xl border border-zinc-800 flex justify-between items-center text-xs">
                     <div>
-                        <div class="font-bold text-white">${k.tanggal} - ${k.ket}</div>
+                        <div class="font-bold text-white">${k.tanggal} - [${k.kategori}] ${k.ket}</div>
                         <div class="text-blue-400 font-semibold">+ Rp ${k.nominal.toLocaleString('id-ID')}</div>
                     </div>
                     <button onclick="hapusKasManualItem(${k.id})" class="text-rose-400 hover:text-rose-300 font-bold px-2 py-1">Hapus</button>
@@ -551,7 +559,7 @@
         }
 
         function saveAndRender() {
-            localStorage.setItem('buper_data_v4', JSON.stringify(appData));
+            localStorage.setItem('buper_data_v5', JSON.stringify(appData));
             renderDashboard();
         }
 
@@ -566,7 +574,6 @@
                 totalTendaNominalCount += t.tenda;
                 totalSetorPerhutani += t.setor;
                 
-                // Total pendapatan operasional adalah akumulasi langsung dari tiket + camping + sewa tenda
                 let subTotal = t.tiket + t.berkemah + t.tenda;
                 totalPendapatanOp += subTotal;
 
