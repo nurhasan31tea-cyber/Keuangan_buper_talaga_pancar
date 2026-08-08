@@ -81,10 +81,10 @@
                 <div class="text-xs text-zinc-400">total nominal sewa tenda</div>
             </div>
         </div>
-        <!-- Sisa Kas -->
+        <!-- Sisa Kas (Gabungan) -->
         <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 shadow-sm flex flex-col justify-between">
             <div class="flex items-center justify-between text-zinc-400 mb-4">
-                <span class="text-xs font-medium">Sisa Kas</span>
+                <span class="text-xs font-medium">Total Sisa Kas</span>
                 <span class="p-2 bg-blue-500/10 text-blue-500 rounded-lg text-sm">💳</span>
             </div>
             <div>
@@ -94,38 +94,53 @@
         </div>
     </div>
 
-    <!-- KARTU PANEL TAMBAHAN -->
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
+    <!-- KARTU PEMISAHAN KAS (HARIAN & CAMPING) & PANEL LAINNYA -->
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-6">
+        <!-- Kas Harian -->
+        <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
+            <div class="flex items-center gap-2 text-zinc-400 text-xs font-medium mb-3">
+                <span>📅</span> Kas Harian (Sisa)
+            </div>
+            <div>
+                <div id="val-kas-harian" class="text-xl font-bold text-blue-400 mb-1">Rp 0</div>
+                <div class="text-[11px] text-zinc-400">masuk - pengeluaran harian</div>
+            </div>
+        </div>
+
+        <!-- Kas Camping -->
+        <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
+            <div class="flex items-center gap-2 text-zinc-400 text-xs font-medium mb-3">
+                <span>⛺</span> Kas Camping (Sisa)
+            </div>
+            <div>
+                <div id="val-kas-camping" class="text-xl font-bold text-emerald-400 mb-1">Rp 0</div>
+                <div class="text-[11px] text-zinc-400">khusus kas masuk camping</div>
+            </div>
+        </div>
+
+        <!-- Saldo Sharing -->
         <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
             <div class="flex items-center gap-2 text-zinc-400 text-xs font-medium mb-3">
                 <span>🔄</span> Saldo Sharing
             </div>
             <div>
-                <div id="val-saldo-sharing" class="text-2xl font-bold text-white mb-1">Rp 0</div>
+                <div id="val-saldo-sharing" class="text-xl font-bold text-white mb-1">Rp 0</div>
                 <button onclick="bukaModalSharing()" class="text-emerald-400 text-xs font-semibold hover:underline mt-1 block">Kelola Sharing →</button>
             </div>
         </div>
 
+        <!-- Pendapatan Tenda Lainnya -->
         <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
             <div class="flex items-center gap-2 text-zinc-400 text-xs font-medium mb-3">
-                <span>⛺</span> Pendapatan Tenda Lainnya
+                <span>⛺</span> Pendapatan Tenda
             </div>
             <div>
-                <div id="val-saldo-tenda" class="text-2xl font-bold text-amber-400 mb-1">Rp 0</div>
+                <div id="val-saldo-tenda" class="text-xl font-bold text-amber-400 mb-1">Rp 0</div>
                 <button onclick="bukaModalTenda()" class="text-amber-400 text-xs font-semibold hover:underline mt-1 block">Kelola Tenda →</button>
             </div>
         </div>
 
-        <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
-            <div class="flex items-center gap-2 text-zinc-400 text-xs font-medium mb-3">
-                <span>💵</span> Kas Manual Masuk
-            </div>
-            <div>
-                <div id="val-kas-manual" class="text-2xl font-bold text-blue-400 mb-1">Rp 0</div>
-                <button onclick="bukaModalKasManual()" class="text-blue-400 text-xs font-semibold hover:underline mt-1 block">Kelola Kas Manual →</button>
-            </div>
-        </div>
-
+        <!-- Saldo Awal -->
         <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between relative">
             <div class="flex items-center justify-between text-zinc-400 text-xs font-medium mb-3">
                 <div class="flex items-center gap-2">
@@ -134,8 +149,8 @@
                 <button onclick="editSaldoAwal()" class="text-zinc-400 hover:text-white" title="Edit Saldo Awal">✏️</button>
             </div>
             <div>
-                <div id="val-saldo-awal" class="text-2xl font-bold text-white mb-1">Rp 4.300.000</div>
-                <div class="text-xs text-zinc-400">input manual awal</div>
+                <div id="val-saldo-awal" class="text-xl font-bold text-white mb-1">Rp 4.300.000</div>
+                <div class="text-[11px] text-zinc-400">input manual awal</div>
             </div>
         </div>
     </div>
@@ -146,7 +161,7 @@
             <div class="text-xs font-semibold uppercase tracking-wider text-emerald-100 mb-1">Total Keseluruhan Uang</div>
             <div id="val-total-uang" class="text-3xl sm:text-4xl font-extrabold mb-2">Rp 4.300.000</div>
             <div id="val-total-formula" class="text-xs text-emerald-100/90 flex flex-wrap gap-x-2 gap-y-1">
-                <span>Sisa Kas: Rp 0</span> + <span>Sharing: Rp 0</span> + <span>Tenda: Rp 0</span> + <span>Kas Manual: Rp 0</span> + <span>Saldo Awal: Rp 4.300.000</span>
+                <span>Kas Harian: Rp 0</span> + <span>Kas Camping: Rp 0</span> + <span>Sharing: Rp 0</span> + <span>Tenda: Rp 0</span> + <span>Saldo Awal: Rp 4.300.000</span>
             </div>
         </div>
         <div class="text-4xl bg-emerald-800/40 p-3 rounded-2xl border border-emerald-500/30">
@@ -368,7 +383,7 @@
 
     <!-- SCRIPT APLIKASI -->
     <script>
-        let appData = JSON.parse(localStorage.getItem('buper_data_v5')) || {
+        let appData = JSON.parse(localStorage.getItem('buper_data_v6')) || {
             saldoAwal: 4300000,
             transaksi: [],
             sharingList: [],
@@ -559,7 +574,7 @@
         }
 
         function saveAndRender() {
-            localStorage.setItem('buper_data_v5', JSON.stringify(appData));
+            localStorage.setItem('buper_data_v6', JSON.stringify(appData));
             renderDashboard();
         }
 
@@ -584,13 +599,24 @@
                 }
             });
 
-            let totalPengeluaranSemua = totalPengeluaranKas + totalPengeluaranPendapatan;
+            // Hitung kas berdasarkan kategori manual masuk
+            let kasHarianMasuk = appData.kasManualList
+                .filter(k => k.kategori === 'Uang Kas Harian')
+                .reduce((acc, curr) => acc + curr.nominal, 0);
+
+            let kasCampingMasuk = appData.kasManualList
+                .filter(k => k.kategori === 'Uang Kas Camping')
+                .reduce((acc, curr) => acc + curr.nominal, 0);
+
+            // Pengeluaran kas diasumsikan mengurangi kas harian
+            let sisaKasHarian = kasHarianMasuk - totalPengeluaranKas;
+            let sisaKasCamping = kasCampingMasuk;
+            let totalSisaKas = sisaKasHarian + sisaKasCamping;
+
             let totalSharing = appData.sharingList.reduce((acc, curr) => acc + curr.nominal, 0);
             let totalTendaNominal = appData.tendaList.reduce((acc, curr) => acc + curr.nominal, 0);
-            let totalKasManual = appData.kasManualList.reduce((acc, curr) => acc + curr.nominal, 0);
-
-            let sisaKas = totalKasManual - totalPengeluaranKas;
-            let totalKeseluruhanUang = sisaKas + totalSharing + totalTendaNominal + appData.saldoAwal;
+            
+            let totalKeseluruhanUang = sisaKasHarian + sisaKasCamping + totalSharing + totalTendaNominal + appData.saldoAwal;
 
             // Render ke HTML
             document.getElementById('info-hari').innerText = `${appData.transaksi.length} hari operasional tercatat`;
@@ -598,19 +624,21 @@
             document.getElementById('stat-berkemah').innerText = `Rp ${totalBerkemahNominal.toLocaleString('id-ID')}`;
             document.getElementById('stat-tenda').innerText = `Rp ${totalTendaNominalCount.toLocaleString('id-ID')}`;
             
-            document.getElementById('val-sisa-kas').innerText = `Rp ${sisaKas.toLocaleString('id-ID')}`;
-            document.getElementById('info-kas-detail').innerText = `Kas Masuk: Rp ${totalKasManual.toLocaleString('id-ID')} | Keluar: Rp ${totalPengeluaranKas.toLocaleString('id-ID')}`;
+            document.getElementById('val-sisa-kas').innerText = `Rp ${totalSisaKas.toLocaleString('id-ID')}`;
+            document.getElementById('info-kas-detail').innerText = `Harian: Rp ${sisaKasHarian.toLocaleString('id-ID')} | Camping: Rp ${sisaKasCamping.toLocaleString('id-ID')}`;
+            
+            document.getElementById('val-kas-harian').innerText = `Rp ${sisaKasHarian.toLocaleString('id-ID')}`;
+            document.getElementById('val-kas-camping').innerText = `Rp ${sisaKasCamping.toLocaleString('id-ID')}`;
             
             document.getElementById('val-saldo-sharing').innerText = `Rp ${totalSharing.toLocaleString('id-ID')}`;
             document.getElementById('val-saldo-tenda').innerText = `Rp ${totalTendaNominal.toLocaleString('id-ID')}`;
-            document.getElementById('val-kas-manual').innerText = `Rp ${totalKasManual.toLocaleString('id-ID')}`;
             document.getElementById('val-saldo-awal').innerText = `Rp ${appData.saldoAwal.toLocaleString('id-ID')}`;
             
             document.getElementById('val-total-uang').innerText = `Rp ${totalKeseluruhanUang.toLocaleString('id-ID')}`;
-            document.getElementById('val-total-formula').innerHTML = `<span>Sisa Kas: Rp ${sisaKas.toLocaleString('id-ID')}</span> + <span>Sharing: Rp ${totalSharing.toLocaleString('id-ID')}</span> + <span>Tenda: Rp ${totalTendaNominal.toLocaleString('id-ID')}</span> + <span>Kas Manual: Rp ${totalKasManual.toLocaleString('id-ID')}</span> + <span>Saldo Awal: Rp ${appData.saldoAwal.toLocaleString('id-ID')}</span>`;
+            document.getElementById('val-total-formula').innerHTML = `<span>Kas Harian: Rp ${sisaKasHarian.toLocaleString('id-ID')}</span> + <span>Kas Camping: Rp ${sisaKasCamping.toLocaleString('id-ID')}</span> + <span>Sharing: Rp ${totalSharing.toLocaleString('id-ID')}</span> + <span>Tenda: Rp ${totalTendaNominal.toLocaleString('id-ID')}</span> + <span>Saldo Awal: Rp ${appData.saldoAwal.toLocaleString('id-ID')}</span>`;
 
             document.getElementById('val-pendapatan-op').innerText = `Rp ${totalPendapatanOp.toLocaleString('id-ID')}`;
-            document.getElementById('val-total-keluar').innerText = `Rp ${totalPengeluaranSemua.toLocaleString('id-ID')}`;
+            document.getElementById('val-total-keluar').innerText = `Rp ${(totalPengeluaranKas + totalPengeluaranPendapatan).toLocaleString('id-ID')}`;
             document.getElementById('val-setor-perhutani').innerText = `Rp ${totalSetorPerhutani.toLocaleString('id-ID')}`;
 
             // Render List Transaksi
@@ -641,7 +669,7 @@
                 `).join('');
             }
 
-            renderCharts(totalPendapatanOp, totalPengeluaranSemua, totalSetorPerhutani);
+            renderCharts(totalPendapatanOp, totalPengeluaranKas + totalPengeluaranPendapatan, totalSetorPerhutani);
         }
 
         function renderCharts(pendapatan, pengeluaran, setor) {
