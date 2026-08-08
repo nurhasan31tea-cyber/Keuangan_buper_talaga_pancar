@@ -34,6 +34,9 @@
             <button onclick="bukaModalEntri()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl shadow-md transition flex items-center gap-2">
                 <span>➕</span> Entri Baru
             </button>
+            <button onclick="bukaModalKasManual()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl shadow-md transition flex items-center gap-2">
+                <span>💵</span> Input Kas Manual
+            </button>
             <button onclick="bukaModalTenda()" class="bg-amber-600 hover:bg-amber-500 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl shadow-md transition flex items-center gap-2">
                 <span>⛺</span> Kas Tenda
             </button>
@@ -86,45 +89,53 @@
             </div>
             <div>
                 <div id="val-sisa-kas" class="text-2xl font-bold text-rose-500 mb-0.5">Rp 0</div>
-                <div class="text-xs text-zinc-400">dari pengeluaran via kas</div>
+                <div id="info-kas-detail" class="text-xs text-zinc-400">pengeluaran & kas manual</div>
             </div>
         </div>
     </div>
 
-    <!-- KARTU SALDO SHARING, TENDA, & SALDO SEBELUMNYA -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+    <!-- KARTU PANEL TAMBAHAN -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
         <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
             <div class="flex items-center gap-2 text-zinc-400 text-xs font-medium mb-3">
-                <span>🔄</span> Saldo Sharing (2x/Bulan)
+                <span>🔄</span> Saldo Sharing
             </div>
             <div>
                 <div id="val-saldo-sharing" class="text-2xl font-bold text-white mb-1">Rp 0</div>
-                <div id="info-sharing-detail" class="text-xs text-zinc-400 mb-3">Belum ada periode sharing</div>
-                <button onclick="bukaModalSharing()" class="text-emerald-400 text-xs font-semibold hover:underline">Kelola Panel Sharing →</button>
+                <button onclick="bukaModalSharing()" class="text-emerald-400 text-xs font-semibold hover:underline mt-1 block">Kelola Sharing →</button>
             </div>
         </div>
 
         <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
             <div class="flex items-center gap-2 text-zinc-400 text-xs font-medium mb-3">
-                <span>⛺</span> Pendapatan Kas Tenda
+                <span>⛺</span> Pendapatan Tenda
             </div>
             <div>
                 <div id="val-saldo-tenda" class="text-2xl font-bold text-amber-400 mb-1">Rp 0</div>
-                <div id="info-tenda-detail" class="text-xs text-zinc-400 mb-3">0 catatan pendapatan tenda</div>
-                <button onclick="bukaModalTenda()" class="text-amber-400 text-xs font-semibold hover:underline">Kelola Kas Tenda →</button>
+                <button onclick="bukaModalTenda()" class="text-amber-400 text-xs font-semibold hover:underline mt-1 block">Kelola Tenda →</button>
+            </div>
+        </div>
+
+        <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
+            <div class="flex items-center gap-2 text-zinc-400 text-xs font-medium mb-3">
+                <span>💵</span> Kas Manual Masuk
+            </div>
+            <div>
+                <div id="val-kas-manual" class="text-2xl font-bold text-blue-400 mb-1">Rp 0</div>
+                <button onclick="bukaModalKasManual()" class="text-blue-400 text-xs font-semibold hover:underline mt-1 block">Kelola Kas Manual →</button>
             </div>
         </div>
 
         <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between relative">
             <div class="flex items-center justify-between text-zinc-400 text-xs font-medium mb-3">
                 <div class="flex items-center gap-2">
-                    <span>💰</span> Saldo Sebelumnya (Kas Awal)
+                    <span>💰</span> Saldo Awal
                 </div>
                 <button onclick="editSaldoAwal()" class="text-zinc-400 hover:text-white" title="Edit Saldo Awal">✏️</button>
             </div>
             <div>
                 <div id="val-saldo-awal" class="text-2xl font-bold text-white mb-1">Rp 4.300.000</div>
-                <div class="text-xs text-zinc-400">saldo awal kas (input manual)</div>
+                <div class="text-xs text-zinc-400">input manual awal</div>
             </div>
         </div>
     </div>
@@ -135,7 +146,7 @@
             <div class="text-xs font-semibold uppercase tracking-wider text-emerald-100 mb-1">Total Keseluruhan Uang</div>
             <div id="val-total-uang" class="text-3xl sm:text-4xl font-extrabold mb-2">Rp 4.300.000</div>
             <div id="val-total-formula" class="text-xs text-emerald-100/90 flex flex-wrap gap-x-2 gap-y-1">
-                <span>Sisa Kas: Rp 0</span> + <span>Sharing: Rp 0</span> + <span>Tenda: Rp 0</span> + <span>Saldo Awal: Rp 4.300.000</span>
+                <span>Sisa Kas: Rp 0</span> + <span>Sharing: Rp 0</span> + <span>Tenda: Rp 0</span> + <span>Kas Manual: Rp 0</span> + <span>Saldo Awal: Rp 4.300.000</span>
             </div>
         </div>
         <div class="text-4xl bg-emerald-800/40 p-3 rounded-2xl border border-emerald-500/30">
@@ -249,6 +260,38 @@
         </div>
     </div>
 
+    <!-- MODAL PANEL INPUT KAS MANUAL -->
+    <div id="modal-kas-manual" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-[#1e1e1e] border border-zinc-800 rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-base font-bold text-white">Panel Input Kas Manual Masuk</h3>
+                <button onclick="tutupModalKasManual()" class="text-zinc-400 hover:text-white">✕</button>
+            </div>
+            <p class="text-xs text-zinc-400 mb-4">Tambah atau masukkan uang kas secara manual ke dalam sistem.</p>
+            
+            <form id="form-kas-manual" onsubmit="simpanKasManual(event)" class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-xs text-zinc-400 mb-1">Tanggal</label>
+                    <input type="date" id="kas-tanggal" required class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-zinc-400 mb-1">Keterangan / Sumber Kas</label>
+                    <input type="text" id="kas-ket" placeholder="Contoh: Tambahan modal / Bantuan operasional" required class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-zinc-400 mb-1">Nominal Kas Masuk (Rp)</label>
+                    <input type="number" id="kas-nominal" value="0" min="0" required class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold py-2.5 rounded-xl">Simpan Kas Manual</button>
+            </form>
+
+            <h4 class="text-xs font-bold text-zinc-300 mb-2 uppercase">Daftar Kas Manual Tersimpan:</h4>
+            <div id="list-kas-manual-data" class="space-y-2 max-h-40 overflow-y-auto">
+                <!-- Daftar kas manual muncul disini -->
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL PANEL PENDAPATAN KAS TENDA -->
     <div id="modal-tenda" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center p-4 z-50">
         <div class="bg-[#1e1e1e] border border-zinc-800 rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
@@ -264,7 +307,7 @@
                     <input type="date" id="tenda-tanggal" required class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-amber-500">
                 </div>
                 <div>
-                    <label class="block text-xs text-zinc-400 mb-1">Keterangan (Contoh: Sewa 3 Tenda Dome)</label>
+                    <label class="block text-xs text-zinc-400 mb-1">Keterangan</label>
                     <input type="text" id="tenda-ket" placeholder="Keterangan sewa/berkemah" required class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-amber-500">
                 </div>
                 <div>
@@ -318,11 +361,12 @@
 
     <!-- SCRIPT APLIKASI -->
     <script>
-        let appData = JSON.parse(localStorage.getItem('buper_data_v2')) || {
+        let appData = JSON.parse(localStorage.getItem('buper_data_v3')) || {
             saldoAwal: 4300000,
             transaksi: [],
             sharingList: [],
-            tendaList: []
+            tendaList: [],
+            kasManualList: []
         };
 
         let chartPendapatanInstance = null;
@@ -331,12 +375,19 @@
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('entri-tanggal').valueAsDate = new Date();
             document.getElementById('tenda-tanggal').valueAsDate = new Date();
+            document.getElementById('kas-tanggal').valueAsDate = new Date();
             renderDashboard();
         });
 
         function bukaModalEntri() { document.getElementById('modal-entri').classList.remove('hidden'); }
         function tutupModalEntri() { document.getElementById('modal-entri').classList.add('hidden'); }
         
+        function bukaModalKasManual() {
+            renderListKasManualModal();
+            document.getElementById('modal-kas-manual').classList.remove('hidden');
+        }
+        function tutupModalKasManual() { document.getElementById('modal-kas-manual').classList.add('hidden'); }
+
         function bukaModalTenda() { 
             renderListTendaModal();
             document.getElementById('modal-tenda').classList.remove('hidden'); 
@@ -383,6 +434,42 @@
                 appData.transaksi = appData.transaksi.filter(t => t.id !== id);
                 saveAndRender();
             }
+        }
+
+        function simpanKasManual(e) {
+            e.preventDefault();
+            const tanggal = document.getElementById('kas-tanggal').value;
+            const ket = document.getElementById('kas-ket').value;
+            const nominal = parseFloat(document.getElementById('kas-nominal').value) || 0;
+
+            appData.kasManualList.push({ id: Date.now(), tanggal, ket, nominal });
+            saveAndRender();
+            renderListKasManualModal();
+            document.getElementById('form-kas-manual').reset();
+            document.getElementById('kas-tanggal').valueAsDate = new Date();
+        }
+
+        function hapusKasManualItem(id) {
+            appData.kasManualList = appData.kasManualList.filter(k => k.id !== id);
+            saveAndRender();
+            renderListKasManualModal();
+        }
+
+        function renderListKasManualModal() {
+            const container = document.getElementById('list-kas-manual-data');
+            if (appData.kasManualList.length === 0) {
+                container.innerHTML = '<div class="text-xs text-zinc-500 text-center py-2">Belum ada kas manual.</div>';
+                return;
+            }
+            container.innerHTML = appData.kasManualList.map(k => `
+                <div class="bg-[#121212] p-3 rounded-xl border border-zinc-800 flex justify-between items-center text-xs">
+                    <div>
+                        <div class="font-bold text-white">${k.tanggal} - ${k.ket}</div>
+                        <div class="text-blue-400 font-semibold">+ Rp ${k.nominal.toLocaleString('id-ID')}</div>
+                    </div>
+                    <button onclick="hapusKasManualItem(${k.id})" class="text-rose-400 hover:text-rose-300 font-bold px-2 py-1">Hapus</button>
+                </div>
+            `).join('');
         }
 
         function simpanTenda(e) {
@@ -458,13 +545,13 @@
 
         function resetData() {
             if (confirm("Reset seluruh data aplikasi?")) {
-                appData = { saldoAwal: 4300000, transaksi: [], sharingList: [], tendaList: [] };
+                appData = { saldoAwal: 4300000, transaksi: [], sharingList: [], tendaList: [], kasManualList: [] };
                 saveAndRender();
             }
         }
 
         function saveAndRender() {
-            localStorage.setItem('buper_data_v2', JSON.stringify(appData));
+            localStorage.setItem('buper_data_v3', JSON.stringify(appData));
             renderDashboard();
         }
 
@@ -490,8 +577,9 @@
             let totalPengeluaranSemua = totalPengeluaranKas + totalPengeluaranPendapatan;
             let totalSharing = appData.sharingList.reduce((acc, curr) => acc + curr.nominal, 0);
             let totalTendaNominal = appData.tendaList.reduce((acc, curr) => acc + curr.nominal, 0);
+            let totalKasManual = appData.kasManualList.reduce((acc, curr) => acc + curr.nominal, 0);
 
-            let sisaKas = -totalPengeluaranKas;
+            let sisaKas = totalKasManual - totalPengeluaranKas;
             let totalKeseluruhanUang = sisaKas + totalSharing + totalTendaNominal + appData.saldoAwal;
 
             // Render ke HTML
@@ -501,16 +589,15 @@
             document.getElementById('stat-tenda').innerText = totalTendaCount;
             
             document.getElementById('val-sisa-kas').innerText = `Rp ${sisaKas.toLocaleString('id-ID')}`;
-            document.getElementById('val-saldo-sharing').innerText = `Rp ${totalSharing.toLocaleString('id-ID')}`;
-            document.getElementById('info-sharing-detail').innerText = `${appData.sharingList.length} catatan sharing tercatat`;
+            document.getElementById('info-kas-detail').innerText = `Kas Masuk: Rp ${totalKasManual.toLocaleString('id-ID')} | Keluar: Rp ${totalPengeluaranKas.toLocaleString('id-ID')}`;
             
+            document.getElementById('val-saldo-sharing').innerText = `Rp ${totalSharing.toLocaleString('id-ID')}`;
             document.getElementById('val-saldo-tenda').innerText = `Rp ${totalTendaNominal.toLocaleString('id-ID')}`;
-            document.getElementById('info-tenda-detail').innerText = `${appData.tendaList.length} catatan pendapatan tenda`;
-
+            document.getElementById('val-kas-manual').innerText = `Rp ${totalKasManual.toLocaleString('id-ID')}`;
             document.getElementById('val-saldo-awal').innerText = `Rp ${appData.saldoAwal.toLocaleString('id-ID')}`;
             
             document.getElementById('val-total-uang').innerText = `Rp ${totalKeseluruhanUang.toLocaleString('id-ID')}`;
-            document.getElementById('val-total-formula').innerHTML = `<span>Sisa Kas: Rp ${sisaKas.toLocaleString('id-ID')}</span> + <span>Sharing: Rp ${totalSharing.toLocaleString('id-ID')}</span> + <span>Tenda: Rp ${totalTendaNominal.toLocaleString('id-ID')}</span> + <span>Saldo Awal: Rp ${appData.saldoAwal.toLocaleString('id-ID')}</span>`;
+            document.getElementById('val-total-formula').innerHTML = `<span>Sisa Kas: Rp ${sisaKas.toLocaleString('id-ID')}</span> + <span>Sharing: Rp ${totalSharing.toLocaleString('id-ID')}</span> + <span>Tenda: Rp ${totalTendaNominal.toLocaleString('id-ID')}</span> + <span>Kas Manual: Rp ${totalKasManual.toLocaleString('id-ID')}</span> + <span>Saldo Awal: Rp ${appData.saldoAwal.toLocaleString('id-ID')}</span>`;
 
             document.getElementById('val-pendapatan-op').innerText = `Rp ${totalPendapatanOp.toLocaleString('id-ID')}`;
             document.getElementById('val-total-keluar').innerText = `Rp ${totalPengeluaranSemua.toLocaleString('id-ID')}`;
