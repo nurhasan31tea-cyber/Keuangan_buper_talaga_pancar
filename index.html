@@ -21,21 +21,24 @@
 <body class="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto">
 
     <!-- HEADER / BANNER UTAMA -->
-    <div class="bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-950 rounded-2xl p-6 mb-6 shadow-lg relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border border-emerald-700/30">
+    <div class="bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-950 rounded-2xl p-6 mb-6 shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border border-emerald-700/30">
         <div>
             <div class="flex items-center gap-2 text-emerald-300 text-xs sm:text-sm font-medium mb-1">
                 <span>🏕️</span>
                 <span>BUPER TALAGA PANCAR</span>
             </div>
             <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Dasbor Keuangan</h1>
-            <p class="text-emerald-200/80 text-xs sm:text-sm mt-1">2 hari operasional tercatat</p>
+            <p id="info-hari" class="text-emerald-200/80 text-xs sm:text-sm mt-1">0 hari operasional tercatat</p>
         </div>
-        <div class="flex items-center gap-3">
-            <button class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl shadow-md transition flex items-center gap-2">
+        <div class="flex flex-wrap items-center gap-3">
+            <button onclick="bukaModalEntri()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl shadow-md transition flex items-center gap-2">
                 <span>➕</span> Entri Baru
             </button>
-            <button class="bg-emerald-900/60 hover:bg-emerald-900 text-emerald-200 text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl border border-emerald-600/40 transition flex items-center gap-2">
-                <span>📋</span> Riwayat
+            <button onclick="bukaModalTenda()" class="bg-amber-600 hover:bg-amber-500 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl shadow-md transition flex items-center gap-2">
+                <span>⛺</span> Kas Tenda
+            </button>
+            <button onclick="bukaModalSharing()" class="bg-emerald-900/60 hover:bg-emerald-900 text-emerald-200 text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl border border-emerald-600/40 transition flex items-center gap-2">
+                <span>🔄</span> Panel Sharing
             </button>
         </div>
     </div>
@@ -49,7 +52,7 @@
                 <span class="p-2 bg-amber-500/10 text-amber-500 rounded-lg text-sm">🎫</span>
             </div>
             <div>
-                <div class="text-2xl font-bold text-white mb-0.5">12</div>
+                <div id="stat-tiket" class="text-2xl font-bold text-white mb-0.5">0</div>
                 <div class="text-xs text-zinc-400">wisata harian</div>
             </div>
         </div>
@@ -60,8 +63,8 @@
                 <span class="p-2 bg-emerald-500/10 text-emerald-500 rounded-lg text-sm">⛺</span>
             </div>
             <div>
-                <div class="text-2xl font-bold text-white mb-0.5">0</div>
-                <div class="text-xs text-zinc-400">0 tenda</div>
+                <div id="stat-berkemah" class="text-2xl font-bold text-white mb-0.5">0</div>
+                <div class="text-xs text-zinc-400">orang berkemah</div>
             </div>
         </div>
         <!-- Sewa Tenda -->
@@ -71,7 +74,7 @@
                 <span class="p-2 bg-orange-500/10 text-orange-500 rounded-lg text-sm">⛺</span>
             </div>
             <div>
-                <div class="text-2xl font-bold text-white mb-0.5">0</div>
+                <div id="stat-tenda" class="text-2xl font-bold text-white mb-0.5">0</div>
                 <div class="text-xs text-zinc-400">unit disewakan</div>
             </div>
         </div>
@@ -82,33 +85,45 @@
                 <span class="p-2 bg-blue-500/10 text-blue-500 rounded-lg text-sm">💳</span>
             </div>
             <div>
-                <div class="text-2xl font-bold text-rose-500 mb-0.5">Rp -500.000</div>
-                <div class="text-xs text-zinc-400">pendapatan - pengeluaran - perhutani</div>
+                <div id="val-sisa-kas" class="text-2xl font-bold text-rose-500 mb-0.5">Rp 0</div>
+                <div class="text-xs text-zinc-400">dari pengeluaran via kas</div>
             </div>
         </div>
     </div>
 
-    <!-- KARTU SALDO SHARING & SALDO SEBELUMNYA -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+    <!-- KARTU SALDO SHARING, TENDA, & SALDO SEBELUMNYA -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
             <div class="flex items-center gap-2 text-zinc-400 text-xs font-medium mb-3">
-                <span>🔄</span> Saldo Sharing
+                <span>🔄</span> Saldo Sharing (2x/Bulan)
             </div>
             <div>
-                <div class="text-2xl font-bold text-white mb-1">Rp 0</div>
-                <div class="text-xs text-zinc-400 mb-3">Masuk: Rp 0 Keluar: Rp 0</div>
-                <a href="#" class="text-emerald-400 text-xs font-semibold hover:underline inline-flex items-center gap-1">Kelola Berbagi →</a>
+                <div id="val-saldo-sharing" class="text-2xl font-bold text-white mb-1">Rp 0</div>
+                <div id="info-sharing-detail" class="text-xs text-zinc-400 mb-3">Belum ada periode sharing</div>
+                <button onclick="bukaModalSharing()" class="text-emerald-400 text-xs font-semibold hover:underline">Kelola Panel Sharing →</button>
             </div>
         </div>
+
+        <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
+            <div class="flex items-center gap-2 text-zinc-400 text-xs font-medium mb-3">
+                <span>⛺</span> Pendapatan Kas Tenda
+            </div>
+            <div>
+                <div id="val-saldo-tenda" class="text-2xl font-bold text-amber-400 mb-1">Rp 0</div>
+                <div id="info-tenda-detail" class="text-xs text-zinc-400 mb-3">0 catatan pendapatan tenda</div>
+                <button onclick="bukaModalTenda()" class="text-amber-400 text-xs font-semibold hover:underline">Kelola Kas Tenda →</button>
+            </div>
+        </div>
+
         <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between relative">
             <div class="flex items-center justify-between text-zinc-400 text-xs font-medium mb-3">
                 <div class="flex items-center gap-2">
-                    <span>💰</span> Saldo Sebelumnya
+                    <span>💰</span> Saldo Sebelumnya (Kas Awal)
                 </div>
-                <button class="text-zinc-400 hover:text-white">✏️</button>
+                <button onclick="editSaldoAwal()" class="text-zinc-400 hover:text-white" title="Edit Saldo Awal">✏️</button>
             </div>
             <div>
-                <div class="text-2xl font-bold text-white mb-1">Rp 4.300.000</div>
+                <div id="val-saldo-awal" class="text-2xl font-bold text-white mb-1">Rp 4.300.000</div>
                 <div class="text-xs text-zinc-400">saldo awal kas (input manual)</div>
             </div>
         </div>
@@ -118,13 +133,9 @@
     <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-2xl p-6 mb-6 shadow-md text-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
             <div class="text-xs font-semibold uppercase tracking-wider text-emerald-100 mb-1">Total Keseluruhan Uang</div>
-            <div class="text-3xl sm:text-4xl font-extrabold mb-2">Rp 3.800.000</div>
-            <div class="text-xs text-emerald-100/90 flex flex-wrap gap-x-2 gap-y-1">
-                <span>Sisa Kas: Rp -500.000</span>
-                <span>+</span>
-                <span>Berbagi: Rp 0</span>
-                <span>+</span>
-                <span>Saldo Awal: Rp 4.300.000</span>
+            <div id="val-total-uang" class="text-3xl sm:text-4xl font-extrabold mb-2">Rp 4.300.000</div>
+            <div id="val-total-formula" class="text-xs text-emerald-100/90 flex flex-wrap gap-x-2 gap-y-1">
+                <span>Sisa Kas: Rp 0</span> + <span>Sharing: Rp 0</span> + <span>Tenda: Rp 0</span> + <span>Saldo Awal: Rp 4.300.000</span>
             </div>
         </div>
         <div class="text-4xl bg-emerald-800/40 p-3 rounded-2xl border border-emerald-500/30">
@@ -136,21 +147,20 @@
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <div class="bg-[#1e1e1e] p-4 rounded-2xl border border-zinc-800">
             <div class="text-xs text-zinc-400 mb-1">Pendapatan Operasional</div>
-            <div class="text-lg font-bold text-emerald-400">Rp 52.000</div>
+            <div id="val-pendapatan-op" class="text-lg font-bold text-emerald-400">Rp 0</div>
         </div>
         <div class="bg-[#1e1e1e] p-4 rounded-2xl border border-zinc-800">
-            <div class="text-xs text-zinc-400 mb-1">Pengeluaran</div>
-            <div class="text-lg font-bold text-rose-500">Rp 500.000</div>
+            <div class="text-xs text-zinc-400 mb-1">Total Pengeluaran</div>
+            <div id="val-total-keluar" class="text-lg font-bold text-rose-500">Rp 0</div>
         </div>
         <div class="bg-[#1e1e1e] p-4 rounded-2xl border border-zinc-800">
             <div class="text-xs text-zinc-400 mb-1">Setor Perhutani</div>
-            <div class="text-lg font-bold text-purple-400">Rp 52.000</div>
+            <div id="val-setor-perhutani" class="text-lg font-bold text-purple-400">Rp 0</div>
         </div>
     </div>
 
     <!-- GRAFIK CHART.JS (2 GRID) -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <!-- Grafik Pendapatan -->
         <div class="bg-[#1e1e1e] p-6 rounded-2xl border border-zinc-800 flex flex-col justify-between">
             <div>
                 <h3 class="text-sm font-bold text-white mb-1">Pendapatan</h3>
@@ -159,14 +169,7 @@
             <div class="relative w-48 h-48 mx-auto my-2">
                 <canvas id="pendapatanChart"></canvas>
             </div>
-            <div class="flex justify-center items-center gap-4 mt-6 text-xs text-zinc-300">
-                <div class="flex items-center gap-1.5">
-                    <span class="w-3 h-3 rounded-full bg-blue-600 inline-block"></span> Tiket Wisata
-                </div>
-            </div>
         </div>
-
-        <!-- Grafik Pengeluaran & Setoran -->
         <div class="bg-[#1e1e1e] p-6 rounded-2xl border border-zinc-800 flex flex-col justify-between">
             <div>
                 <h3 class="text-sm font-bold text-white mb-1">Pengeluaran & Setoran</h3>
@@ -175,42 +178,6 @@
             <div class="relative w-48 h-48 mx-auto my-2">
                 <canvas id="pengeluaranChart"></canvas>
             </div>
-            <div class="flex justify-center items-center gap-6 mt-6 text-xs text-zinc-300">
-                <div class="flex items-center gap-1.5">
-                    <span class="w-3 h-3 rounded-full bg-rose-600 inline-block"></span> Pengeluaran
-                </div>
-                <div class="flex items-center gap-1.5">
-                    <span class="w-3 h-3 rounded-full bg-purple-600 inline-block"></span> Setor Perhutani
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- BAGIAN DATA KOSONG (UNIT TENDA & PENDAPATAN TENDA) -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <div class="bg-[#1e1e1e] p-6 rounded-2xl border border-zinc-800 h-64 flex flex-col justify-between">
-            <div>
-                <div class="flex items-center gap-2 text-xs font-semibold text-zinc-300 mb-1">
-                    <span>⛺</span> Unit Tenda
-                </div>
-                <p class="text-xs text-zinc-500">Berkemah vs Sewa Tenda</p>
-            </div>
-            <div class="text-center text-xs text-zinc-500 my-auto">
-                Belum ada data tenda
-            </div>
-            <div></div>
-        </div>
-        <div class="bg-[#1e1e1e] p-6 rounded-2xl border border-zinc-800 h-64 flex flex-col justify-between">
-            <div>
-                <div class="flex items-center gap-2 text-xs font-semibold text-zinc-300 mb-1">
-                    <span>💰</span> Pendapatan Tenda
-                </div>
-                <p class="text-xs text-zinc-500">Pendapatan berkemah & sewa tenda</p>
-            </div>
-            <div class="text-center text-xs text-zinc-500 my-auto">
-                Belum ada data pendapatan tenda
-            </div>
-            <div></div>
         </div>
     </div>
 
@@ -218,95 +185,392 @@
     <div class="bg-[#1e1e1e] rounded-2xl border border-zinc-800 p-6 mb-8">
         <div class="flex justify-between items-center mb-4">
             <div class="flex items-center gap-2 text-sm font-bold text-white">
-                <span>📅</span> Transaksi Terbaru
+                <span>📅</span> Riwayat Transaksi & Pengeluaran
             </div>
-            <a href="#" class="text-xs text-emerald-400 font-semibold hover:underline">Lihat Semua ></a>
+            <button onclick="resetData()" class="text-xs text-rose-400 hover:underline">Reset Semua Data</button>
         </div>
 
-        <div class="space-y-3">
-            <!-- Item Transaksi 1 -->
-            <div class="bg-[#161616] border border-zinc-800/80 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                <div class="flex items-center gap-3">
-                    <div class="bg-blue-600/20 text-blue-400 font-bold text-sm w-9 h-9 rounded-xl flex items-center justify-center border border-blue-500/20">
-                        8
-                    </div>
-                    <div>
-                        <div class="text-xs font-semibold text-white">Sab, 8 Agu 2026</div>
-                        <div class="text-[11px] text-zinc-400 mt-0.5">Tiket: 12 Berkemah: 0 org</div>
-                    </div>
-                </div>
-                <div class="text-right w-full sm:w-auto flex sm:flex-col justify-between sm:justify-start items-center sm:items-end">
-                    <div class="text-xs font-bold text-white">Rp 0</div>
-                    <div class="text-[11px] text-zinc-500">sisa kas</div>
-                </div>
-            </div>
+        <div id="list-transaksi" class="space-y-3">
+            <div class="text-center text-xs text-zinc-500 py-6">Belum ada transaksi tercatat.</div>
+        </div>
+    </div>
 
-            <!-- Item Transaksi 2 -->
-            <div class="bg-[#161616] border border-zinc-800/80 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                <div class="flex items-center gap-3">
-                    <div class="bg-blue-600/20 text-blue-400 font-bold text-sm w-9 h-9 rounded-xl flex items-center justify-center border border-blue-500/20">
-                        1
+    <!-- MODAL FORM ENTRI BARU -->
+    <div id="modal-entri" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-[#1e1e1e] border border-zinc-800 rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-base font-bold text-white">Tambah Entri Operasional Baru</h3>
+                <button onclick="tutupModalEntri()" class="text-zinc-400 hover:text-white">✕</button>
+            </div>
+            <form id="form-entri" onsubmit="simpanEntri(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs text-zinc-400 mb-1">Tanggal Transaksi</label>
+                    <input type="date" id="entri-tanggal" required class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <div>
+                        <label class="block text-xs text-zinc-400 mb-1">Tiket Wisata</label>
+                        <input type="number" id="entri-tiket" value="0" min="0" class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
                     </div>
                     <div>
-                        <div class="text-xs font-semibold text-white">Sab, 1 Agu 2026</div>
-                        <div class="text-[11px] text-zinc-400 mt-0.5">Tiket: 0 Berkemah: 0 org</div>
+                        <label class="block text-xs text-zinc-400 mb-1">Org Berkemah</label>
+                        <input type="number" id="entri-berkemah" value="0" min="0" class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-zinc-400 mb-1">Sewa Tenda</label>
+                        <input type="number" id="entri-tenda" value="0" min="0" class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
                     </div>
                 </div>
-                <div class="text-right w-full sm:w-auto flex sm:flex-col justify-between sm:justify-start items-center sm:items-end">
-                    <div class="text-xs font-bold text-rose-500">Rp -500.000</div>
-                    <div class="text-[11px] text-zinc-500">sisa kas</div>
+                <hr class="border-zinc-800 my-2">
+                <div>
+                    <label class="block text-xs text-zinc-400 mb-1">Pengeluaran / Biaya (Opsional)</label>
+                    <input type="number" id="entri-pengeluaran" value="0" min="0" class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
                 </div>
+                <div>
+                    <label class="block text-xs text-zinc-400 mb-1">Keterangan Pengeluaran</label>
+                    <input type="text" id="entri-ket-pengeluaran" placeholder="Contoh: Beli konsumsi / Perbaikan lampu" class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-zinc-400 mb-1">Sumber Dana Pengeluaran Keluar Dari:</label>
+                    <select id="entri-sumber-dana" class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                        <option value="kas">Kas (Mengurangi Sisa Kas)</option>
+                        <option value="pendapatan">Pendapatan (Mengurangi Pendapatan Harian)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-zinc-400 mb-1">Setor Perhutani</label>
+                    <input type="number" id="entri-setor" value="0" min="0" class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="tutupModalEntri()" class="bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-semibold px-4 py-2.5 rounded-xl">Batal</button>
+                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl">Simpan Entri</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL PANEL PENDAPATAN KAS TENDA -->
+    <div id="modal-tenda" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-[#1e1e1e] border border-zinc-800 rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-base font-bold text-white">Panel Pendapatan Kas Tenda</h3>
+                <button onclick="tutupModalTenda()" class="text-zinc-400 hover:text-white">✕</button>
+            </div>
+            <p class="text-xs text-zinc-400 mb-4">Catat pendapatan khusus dari sewa tenda dan area berkemah.</p>
+            
+            <form id="form-tenda" onsubmit="simpanTenda(event)" class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-xs text-zinc-400 mb-1">Tanggal</label>
+                    <input type="date" id="tenda-tanggal" required class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-amber-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-zinc-400 mb-1">Keterangan (Contoh: Sewa 3 Tenda Dome)</label>
+                    <input type="text" id="tenda-ket" placeholder="Keterangan sewa/berkemah" required class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-amber-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-zinc-400 mb-1">Nominal Pendapatan Tenda (Rp)</label>
+                    <input type="number" id="tenda-nominal" value="0" min="0" required class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-amber-500">
+                </div>
+                <button type="submit" class="w-full bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold py-2.5 rounded-xl">Simpan Pendapatan Tenda</button>
+            </form>
+
+            <h4 class="text-xs font-bold text-zinc-300 mb-2 uppercase">Daftar Pendapatan Tenda Tersimpan:</h4>
+            <div id="list-tenda-data" class="space-y-2 max-h-40 overflow-y-auto">
+                <!-- Daftar tenda muncul disini -->
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT CHART CONFIGURATION -->
+    <!-- MODAL PANEL KHUSUS PENDAPATAN SHARING -->
+    <div id="modal-sharing" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-[#1e1e1e] border border-zinc-800 rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-base font-bold text-white">Panel Pendapatan Sharing (2x Sebulan)</h3>
+                <button onclick="tutupModalSharing()" class="text-zinc-400 hover:text-white">✕</button>
+            </div>
+            <p class="text-xs text-zinc-400 mb-4">Catat pendapatan bagi hasil/sharing dua kali dalam sebulan.</p>
+            
+            <form id="form-sharing" onsubmit="simpanSharing(event)" class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-xs text-zinc-400 mb-1">Pilih Periode Sharing</label>
+                    <select id="sharing-periode" class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                        <option value="Periode 1 (Tengah Bulan)">Periode 1 (Tanggal 1 - 15)</option>
+                        <option value="Periode 2 (Akhir Bulan)">Periode 2 (Tanggal 16 - Akhir Bulan)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-zinc-400 mb-1">Bulan & Tahun</label>
+                    <input type="text" id="sharing-bulan" placeholder="Contoh: Agustus 2026" required class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-zinc-400 mb-1">Nominal Pendapatan Sharing (Rp)</label>
+                    <input type="number" id="sharing-nominal" value="0" min="0" required class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold py-2.5 rounded-xl">Tambah Riwayat Sharing</button>
+            </form>
+
+            <h4 class="text-xs font-bold text-zinc-300 mb-2 uppercase">Daftar Catatan Sharing Tersimpan:</h4>
+            <div id="list-sharing-data" class="space-y-2 max-h-40 overflow-y-auto">
+                <!-- Daftar sharing muncul disini -->
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT APLIKASI -->
     <script>
-        // Konfigurasi Chart Donut Pendapatan
-        const ctxPendapatan = document.getElementById('pendapatanChart').getContext('2d');
-        new Chart(ctxPendapatan, {
-            type: 'doughnut',
-            data: {
-                labels: ['Tiket Wisata'],
-                datasets: [{
-                    data: [52000],
-                    backgroundColor: ['#2563eb'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { enabled: true }
-                },
-                cutout: '75%'
-            }
+        let appData = JSON.parse(localStorage.getItem('buper_data_v2')) || {
+            saldoAwal: 4300000,
+            transaksi: [],
+            sharingList: [],
+            tendaList: []
+        };
+
+        let chartPendapatanInstance = null;
+        let chartPengeluaranInstance = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('entri-tanggal').valueAsDate = new Date();
+            document.getElementById('tenda-tanggal').valueAsDate = new Date();
+            renderDashboard();
         });
 
-        // Konfigurasi Chart Donut Pengeluaran & Setoran
-        const ctxPengeluaran = document.getElementById('pengeluaranChart').getContext('2d');
-        new Chart(ctxPengeluaran, {
-            type: 'doughnut',
-            data: {
-                labels: ['Pengeluaran', 'Setor Perhutani'],
-                datasets: [{
-                    data: [500000, 52000],
-                    backgroundColor: ['#e11d48', '#9333ea'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { enabled: true }
-                },
-                cutout: '75%'
+        function bukaModalEntri() { document.getElementById('modal-entri').classList.remove('hidden'); }
+        function tutupModalEntri() { document.getElementById('modal-entri').classList.add('hidden'); }
+        
+        function bukaModalTenda() { 
+            renderListTendaModal();
+            document.getElementById('modal-tenda').classList.remove('hidden'); 
+        }
+        function tutupModalTenda() { document.getElementById('modal-tenda').classList.add('hidden'); }
+
+        function bukaModalSharing() { 
+            renderListSharingModal();
+            document.getElementById('modal-sharing').classList.remove('hidden'); 
+        }
+        function tutupModalSharing() { document.getElementById('modal-sharing').classList.add('hidden'); }
+
+        function editSaldoAwal() {
+            let input = prompt("Masukkan jumlah saldo awal kas manual:", appData.saldoAwal);
+            if (input !== null && !isNaN(input)) {
+                appData.saldoAwal = parseFloat(input);
+                saveAndRender();
             }
-        });
+        }
+
+        function simpanEntri(e) {
+            e.preventDefault();
+            const newEntry = {
+                id: Date.now(),
+                tanggal: document.getElementById('entri-tanggal').value,
+                tiket: parseInt(document.getElementById('entri-tiket').value) || 0,
+                berkemah: parseInt(document.getElementById('entri-berkemah').value) || 0,
+                tenda: parseInt(document.getElementById('entri-tenda').value) || 0,
+                pengeluaran: parseFloat(document.getElementById('entri-pengeluaran').value) || 0,
+                keteranganPengeluaran: document.getElementById('entri-ket-pengeluaran').value || '-',
+                sumberDana: document.getElementById('entri-sumber-dana').value,
+                setor: parseFloat(document.getElementById('entri-setor').value) || 0
+            };
+
+            appData.transaksi.push(newEntry);
+            saveAndRender();
+            tutupModalEntri();
+            document.getElementById('form-entri').reset();
+            document.getElementById('entri-tanggal').valueAsDate = new Date();
+        }
+
+        function hapusTransaksi(id) {
+            if (confirm("Hapus data transaksi ini?")) {
+                appData.transaksi = appData.transaksi.filter(t => t.id !== id);
+                saveAndRender();
+            }
+        }
+
+        function simpanTenda(e) {
+            e.preventDefault();
+            const tanggal = document.getElementById('tenda-tanggal').value;
+            const ket = document.getElementById('tenda-ket').value;
+            const nominal = parseFloat(document.getElementById('tenda-nominal').value) || 0;
+
+            appData.tendaList.push({ id: Date.now(), tanggal, ket, nominal });
+            saveAndRender();
+            renderListTendaModal();
+            document.getElementById('form-tenda').reset();
+            document.getElementById('tenda-tanggal').valueAsDate = new Date();
+        }
+
+        function hapusTendaItem(id) {
+            appData.tendaList = appData.tendaList.filter(t => t.id !== id);
+            saveAndRender();
+            renderListTendaModal();
+        }
+
+        function renderListTendaModal() {
+            const container = document.getElementById('list-tenda-data');
+            if (appData.tendaList.length === 0) {
+                container.innerHTML = '<div class="text-xs text-zinc-500 text-center py-2">Belum ada pendapatan tenda.</div>';
+                return;
+            }
+            container.innerHTML = appData.tendaList.map(t => `
+                <div class="bg-[#121212] p-3 rounded-xl border border-zinc-800 flex justify-between items-center text-xs">
+                    <div>
+                        <div class="font-bold text-white">${t.tanggal} - ${t.ket}</div>
+                        <div class="text-amber-400 font-semibold">Rp ${t.nominal.toLocaleString('id-ID')}</div>
+                    </div>
+                    <button onclick="hapusTendaItem(${t.id})" class="text-rose-400 hover:text-rose-300 font-bold px-2 py-1">Hapus</button>
+                </div>
+            `).join('');
+        }
+
+        function simpanSharing(e) {
+            e.preventDefault();
+            const periode = document.getElementById('sharing-periode').value;
+            const bulan = document.getElementById('sharing-bulan').value;
+            const nominal = parseFloat(document.getElementById('sharing-nominal').value) || 0;
+
+            appData.sharingList.push({ id: Date.now(), periode, bulan, nominal });
+            saveAndRender();
+            renderListSharingModal();
+            document.getElementById('form-sharing').reset();
+        }
+
+        function hapusSharing(id) {
+            appData.sharingList = appData.sharingList.filter(s => s.id !== id);
+            saveAndRender();
+            renderListSharingModal();
+        }
+
+        function renderListSharingModal() {
+            const container = document.getElementById('list-sharing-data');
+            if (appData.sharingList.length === 0) {
+                container.innerHTML = '<div class="text-xs text-zinc-500 text-center py-2">Belum ada data sharing.</div>';
+                return;
+            }
+            container.innerHTML = appData.sharingList.map(s => `
+                <div class="bg-[#121212] p-3 rounded-xl border border-zinc-800 flex justify-between items-center text-xs">
+                    <div>
+                        <div class="font-bold text-white">${s.bulan} - ${s.periode}</div>
+                        <div class="text-emerald-400 font-semibold">Rp ${s.nominal.toLocaleString('id-ID')}</div>
+                    </div>
+                    <button onclick="hapusSharing(${s.id})" class="text-rose-400 hover:text-rose-300 font-bold px-2 py-1">Hapus</button>
+                </div>
+            `).join('');
+        }
+
+        function resetData() {
+            if (confirm("Reset seluruh data aplikasi?")) {
+                appData = { saldoAwal: 4300000, transaksi: [], sharingList: [], tendaList: [] };
+                saveAndRender();
+            }
+        }
+
+        function saveAndRender() {
+            localStorage.setItem('buper_data_v2', JSON.stringify(appData));
+            renderDashboard();
+        }
+
+        function renderDashboard() {
+            let totalTiket = 0, totalBerkemah = 0, totalTendaCount = 0;
+            let totalPengeluaranKas = 0, totalPengeluaranPendapatan = 0;
+            let totalSetorPerhutani = 0, totalPendapatanOp = 0;
+
+            appData.transaksi.forEach(t => {
+                totalTiket += t.tiket;
+                totalBerkemah += t.berkemah;
+                totalTendaCount += t.tenda;
+                totalSetorPerhutani += t.setor;
+                totalPendapatanOp += (t.tiket * 10000);
+
+                if (t.sumberDana === 'kas') {
+                    totalPengeluaranKas += t.pengeluaran;
+                } else {
+                    totalPengeluaranPendapatan += t.pengeluaran;
+                }
+            });
+
+            let totalPengeluaranSemua = totalPengeluaranKas + totalPengeluaranPendapatan;
+            let totalSharing = appData.sharingList.reduce((acc, curr) => acc + curr.nominal, 0);
+            let totalTendaNominal = appData.tendaList.reduce((acc, curr) => acc + curr.nominal, 0);
+
+            let sisaKas = -totalPengeluaranKas;
+            let totalKeseluruhanUang = sisaKas + totalSharing + totalTendaNominal + appData.saldoAwal;
+
+            // Render ke HTML
+            document.getElementById('info-hari').innerText = `${appData.transaksi.length} hari operasional tercatat`;
+            document.getElementById('stat-tiket').innerText = totalTiket;
+            document.getElementById('stat-berkemah').innerText = totalBerkemah;
+            document.getElementById('stat-tenda').innerText = totalTendaCount;
+            
+            document.getElementById('val-sisa-kas').innerText = `Rp ${sisaKas.toLocaleString('id-ID')}`;
+            document.getElementById('val-saldo-sharing').innerText = `Rp ${totalSharing.toLocaleString('id-ID')}`;
+            document.getElementById('info-sharing-detail').innerText = `${appData.sharingList.length} catatan sharing tercatat`;
+            
+            document.getElementById('val-saldo-tenda').innerText = `Rp ${totalTendaNominal.toLocaleString('id-ID')}`;
+            document.getElementById('info-tenda-detail').innerText = `${appData.tendaList.length} catatan pendapatan tenda`;
+
+            document.getElementById('val-saldo-awal').innerText = `Rp ${appData.saldoAwal.toLocaleString('id-ID')}`;
+            
+            document.getElementById('val-total-uang').innerText = `Rp ${totalKeseluruhanUang.toLocaleString('id-ID')}`;
+            document.getElementById('val-total-formula').innerHTML = `<span>Sisa Kas: Rp ${sisaKas.toLocaleString('id-ID')}</span> + <span>Sharing: Rp ${totalSharing.toLocaleString('id-ID')}</span> + <span>Tenda: Rp ${totalTendaNominal.toLocaleString('id-ID')}</span> + <span>Saldo Awal: Rp ${appData.saldoAwal.toLocaleString('id-ID')}</span>`;
+
+            document.getElementById('val-pendapatan-op').innerText = `Rp ${totalPendapatanOp.toLocaleString('id-ID')}`;
+            document.getElementById('val-total-keluar').innerText = `Rp ${totalPengeluaranSemua.toLocaleString('id-ID')}`;
+            document.getElementById('val-setor-perhutani').innerText = `Rp ${totalSetorPerhutani.toLocaleString('id-ID')}`;
+
+            // Render List Transaksi
+            const listContainer = document.getElementById('list-transaksi');
+            if (appData.transaksi.length === 0) {
+                listContainer.innerHTML = '<div class="text-center text-xs text-zinc-500 py-6">Belum ada transaksi tercatat. Klik "Entri Baru" untuk mulai.</div>';
+            } else {
+                listContainer.innerHTML = appData.transaksi.map(t => `
+                    <div class="bg-[#161616] border border-zinc-800/80 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-emerald-600/20 text-emerald-400 font-bold text-sm w-9 h-9 rounded-xl flex items-center justify-center border border-emerald-500/20">
+                                🏕️
+                            </div>
+                            <div>
+                                <div class="text-xs font-semibold text-white">${t.tanggal}</div>
+                                <div class="text-[11px] text-zinc-400 mt-0.5">Tiket: ${t.tiket} | Berkemah: ${t.berkemah} org | Tenda: ${t.tenda} unit</div>
+                                <div class="text-[11px] text-zinc-300 mt-1 italic">Ket. Keluar: ${t.keteranganPengeluaran} (Sumber: <span class="uppercase font-semibold text-emerald-400">${t.sumberDana}</span>)</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+                            <div class="text-right">
+                                <div class="text-xs font-bold text-rose-500">Keluar: Rp ${t.pengeluaran.toLocaleString('id-ID')}</div>
+                                <div class="text-[11px] text-purple-400">Setor: Rp ${t.setor.toLocaleString('id-ID')}</div>
+                            </div>
+                            <button onclick="hapusTransaksi(${t.id})" class="text-zinc-500 hover:text-rose-400 text-xs font-bold p-1">🗑️</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            renderCharts(totalPendapatanOp, totalPengeluaranSemua, totalSetorPerhutani);
+        }
+
+        function renderCharts(pendapatan, pengeluaran, setor) {
+            if (chartPendapatanInstance) chartPendapatanInstance.destroy();
+            if (chartPengeluaranInstance) chartPengeluaranInstance.destroy();
+
+            const ctx1 = document.getElementById('pendapatanChart').getContext('2d');
+            chartPendapatanInstance = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pendapatan Operasional'],
+                    datasets: [{ data: [pendapatan > 0 ? pendapatan : 1], backgroundColor: ['#2563eb'], borderWidth: 0 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
+            });
+
+            const ctx2 = document.getElementById('pengeluaranChart').getContext('2d');
+            chartPengeluaranInstance = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pengeluaran', 'Setor Perhutani'],
+                    datasets: [{ data: [pengeluaran, setor], backgroundColor: ['#e11d48', '#9333ea'], borderWidth: 0 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
+            });
+        }
     </script>
 </body>
 </html>
