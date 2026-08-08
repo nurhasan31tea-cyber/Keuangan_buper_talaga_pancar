@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chart.js DataLabels Plugin CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -193,7 +195,7 @@
                 <h3 class="text-sm font-bold text-white mb-1">Grafik Total Sisa Kas</h3>
                 <p class="text-xs text-zinc-400 mb-4">Komposisi Kas Harian vs Camping</p>
             </div>
-            <div class="relative w-40 h-40 mx-auto my-2">
+            <div class="relative w-48 h-48 mx-auto my-2">
                 <canvas id="chartSisaKas"></canvas>
             </div>
         </div>
@@ -204,7 +206,7 @@
                 <h3 class="text-sm font-bold text-white mb-1">Grafik Gabungan Kas & Pengeluaran</h3>
                 <p class="text-xs text-zinc-400 mb-4">Perbandingan Kas Harian, Camping, & Pengeluaran</p>
             </div>
-            <div class="relative w-40 h-40 mx-auto my-2">
+            <div class="relative w-48 h-48 mx-auto my-2">
                 <canvas id="chartGabunganKasPengeluaran"></canvas>
             </div>
         </div>
@@ -215,7 +217,7 @@
                 <h3 class="text-sm font-bold text-white mb-1">Grafik Pendapatan Sharing</h3>
                 <p class="text-xs text-zinc-400 mb-4">Perbandingan tiap bulan per periode (Bar Chart)</p>
             </div>
-            <div class="relative w-full h-48 mx-auto my-2">
+            <div class="relative w-full h-52 mx-auto my-2">
                 <canvas id="chartSaldoSharing"></canvas>
             </div>
         </div>
@@ -226,7 +228,7 @@
                 <h3 class="text-sm font-bold text-white mb-1">Grafik Pendapatan Tenda</h3>
                 <p class="text-xs text-zinc-400 mb-4">Rincian pendapatan sewa tenda</p>
             </div>
-            <div class="relative w-40 h-40 mx-auto my-2">
+            <div class="relative w-48 h-48 mx-auto my-2">
                 <canvas id="chartPendapatanTenda"></canvas>
             </div>
         </div>
@@ -401,8 +403,21 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs text-zinc-400 mb-1">Bulan & Tahun</label>
-                    <input type="text" id="sharing-bulan" placeholder="Contoh: Agustus 2026" required class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                    <label class="block text-xs text-zinc-400 mb-1">Pilih Bulan</label>
+                    <select id="sharing-bulan" class="w-full bg-[#121212] border border-zinc-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                        <option value="Januari">Januari</option>
+                        <option value="Februari">Februari</option>
+                        <option value="Maret">Maret</option>
+                        <option value="April">April</option>
+                        <option value="Mei">Mei</option>
+                        <option value="Juni">Juni</option>
+                        <option value="Juli">Juli</option>
+                        <option value="Agustus" selected>Agustus</option>
+                        <option value="September">September</option>
+                        <option value="Oktober">Oktober</option>
+                        <option value="November">November</option>
+                        <option value="Desember">Desember</option>
+                    </select>
                 </div>
                 <div>
                     <label class="block text-xs text-zinc-400 mb-1">Nominal Pendapatan Sharing (Rp)</label>
@@ -420,6 +435,9 @@
 
     <!-- SCRIPT APLIKASI -->
     <script>
+        // Registrasi plugin datalabels Chart.js
+        Chart.register(ChartDataLabels);
+
         let appData = JSON.parse(localStorage.getItem('buper_data_v6')) || {
             saldoAwal: 4300000,
             transaksi: [],
@@ -583,7 +601,7 @@
         function simpanSharing(e) {
             e.preventDefault();
             const periode = document.getElementById('sharing-periode').value;
-            const bulan = document.getElementById('sharing-bulan').value.trim();
+            const bulan = document.getElementById('sharing-bulan').value;
             const nominal = parseFloat(document.getElementById('sharing-nominal').value) || 0;
 
             appData.sharingList.push({ id: Date.now(), periode, bulan, nominal });
@@ -720,12 +738,30 @@
             renderAllCharts(sisaKasHarian, sisaKasCamping, totalSisaKas, totalTendaNominal, totalPengeluaranGabungan);
         }
 
+        function formatRupiahSingkat(value) {
+            if (value >= 1000000) {
+                return (value / 1000000).toFixed(1).replace('.0', '') + 'jt';
+            } else if (value >= 1000) {
+                return (value / 1000).toFixed(0) + 'rb';
+            }
+            return value;
+        }
+
         function renderAllCharts(sisaHarian, sisaCamping, totalKas, tendaTotal, pengeluaranTotal) {
             // Destroy existing charts if any
             if (chartSisaKasInstance) chartSisaKasInstance.destroy();
             if (chartGabunganInstance) chartGabunganInstance.destroy();
             if (chartSaldoSharingInstance) chartSaldoSharingInstance.destroy();
             if (chartPendapatanTendaInstance) chartPendapatanTendaInstance.destroy();
+
+            const commonDataLabelsConfig = {
+                color: '#ffffff',
+                font: { size: 10, weight: 'bold' },
+                formatter: (value) => {
+                    if (value <= 0) return '';
+                    return formatRupiahSingkat(value);
+                }
+            };
 
             // 1. Chart Total Sisa Kas
             const ctx1 = document.getElementById('chartSisaKas').getContext('2d');
@@ -735,7 +771,15 @@
                     labels: ['Kas Harian', 'Kas Camping'],
                     datasets: [{ data: [sisaHarian > 0 ? sisaHarian : (totalKas === 0 ? 1 : 0), sisaCamping > 0 ? sisaCamping : 0], backgroundColor: ['#3b82f6', '#10b981'], borderWidth: 0 }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { 
+                        legend: { display: false },
+                        datalabels: commonDataLabelsConfig
+                    }, 
+                    cutout: '65%' 
+                }
             });
 
             // 2. Chart Gabungan: Kas Harian, Kas Camping, & Pengeluaran
@@ -754,22 +798,32 @@
                         borderWidth: 0
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { 
+                        legend: { display: false },
+                        datalabels: commonDataLabelsConfig
+                    }, 
+                    cutout: '65%' 
+                }
             });
 
-            // 3. Chart Bar Pendapatan Sharing per Bulan per Periode
-            // Mengelompokkan data sharing berdasarkan bulan, lalu memisahkan Periode 1 dan Periode 2
+            // 3. Chart Bar Pendapatan Sharing per Bulan (Urutan Urut Kalender) per Periode
+            const urutanBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            
+            // Ambil daftar bulan yang unik dari data sharing, lalu urutkan sesuai kalender
             let bulanSet = [...new Set(appData.sharingList.map(s => s.bulan))];
-            if (bulanSet.length === 0) bulanSet = ['Belum Ada Data'];
+            bulanSet.sort((a, b) => urutanBulan.indexOf(a) - urutanBulan.indexOf(b));
+            
+            if (bulanSet.length === 0) bulanSet = ['Agustus']; // Default preview bulan jika kosong
 
             let dataPeriode1 = bulanSet.map(b => {
-                if (b === 'Belum Ada Data') return 0;
                 let found = appData.sharingList.find(s => s.bulan === b && s.periode.includes('Periode 1'));
                 return found ? found.nominal : 0;
             });
 
             let dataPeriode2 = bulanSet.map(b => {
-                if (b === 'Belum Ada Data') return 0;
                 let found = appData.sharingList.find(s => s.bulan === b && s.periode.includes('Periode 2'));
                 return found ? found.nominal : 0;
             });
@@ -807,6 +861,16 @@
                                 font: { size: 11 }
                             }
                         },
+                        datalabels: {
+                            color: '#ffffff',
+                            font: { size: 9, weight: 'bold' },
+                            anchor: 'end',
+                            align: 'top',
+                            formatter: (value) => {
+                                if (value <= 0) return '';
+                                return formatRupiahSingkat(value);
+                            }
+                        },
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
@@ -825,7 +889,7 @@
                     scales: {
                         x: {
                             grid: { display: false },
-                            ticks: { color: '#a1a1aa', font: { size: 11 } }
+                            ticks: { color: '#e0e0e0', font: { size: 11, weight: 'bold' } }
                         },
                         y: {
                             grid: { color: '#27272a' },
@@ -833,12 +897,7 @@
                                 color: '#a1a1aa',
                                 font: { size: 10 },
                                 callback: function(value) {
-                                    if (value >= 1000000) {
-                                        return (value / 1000000) + 'jt';
-                                    } else if (value >= 1000) {
-                                        return (value / 1000) + 'rb';
-                                    }
-                                    return value;
+                                    return formatRupiahSingkat(value);
                                 }
                             }
                         }
@@ -854,7 +913,15 @@
                     labels: ['Pendapatan Tenda'],
                     datasets: [{ data: [tendaTotal > 0 ? tendaTotal : 1], backgroundColor: ['#f59e0b'], borderWidth: 0 }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { 
+                        legend: { display: false },
+                        datalabels: commonDataLabelsConfig
+                    }, 
+                    cutout: '65%' 
+                }
             });
         }
     </script>
