@@ -185,7 +185,7 @@
         </div>
     </div>
 
-    <!-- GRAFIK CHART.JS (DETAIL TIAP MENU BERDASARKAN GAMBAR) -->
+    <!-- GRAFIK CHART.JS (DENGAN GRAFIK GABUNGAN KAS HARIAN, CAMPING, & PENGELUARAN) -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         <!-- Chart 1: Total Sisa Kas -->
         <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
@@ -197,27 +197,19 @@
                 <canvas id="chartSisaKas"></canvas>
             </div>
         </div>
-        <!-- Chart 2: Kas Harian -->
+
+        <!-- Chart Gabungan: Kas Harian, Kas Camping, & Pengeluaran -->
         <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
             <div>
-                <h3 class="text-sm font-bold text-white mb-1">Grafik Kas Harian (Sisa)</h3>
-                <p class="text-xs text-zinc-400 mb-4">Masuk vs Pengeluaran Harian</p>
+                <h3 class="text-sm font-bold text-white mb-1">Grafik Gabungan Kas & Pengeluaran</h3>
+                <p class="text-xs text-zinc-400 mb-4">Perbandingan Kas Harian, Camping, & Pengeluaran</p>
             </div>
             <div class="relative w-40 h-40 mx-auto my-2">
-                <canvas id="chartKasHarian"></canvas>
+                <canvas id="chartGabunganKasPengeluaran"></canvas>
             </div>
         </div>
-        <!-- Chart 3: Kas Camping -->
-        <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
-            <div>
-                <h3 class="text-sm font-bold text-white mb-1">Grafik Kas Camping</h3>
-                <p class="text-xs text-zinc-400 mb-4">Akumulasi kas masuk camping</p>
-            </div>
-            <div class="relative w-40 h-40 mx-auto my-2">
-                <canvas id="chartKasCamping"></canvas>
-            </div>
-        </div>
-        <!-- Chart 4: Saldo Sharing -->
+
+        <!-- Chart 3: Saldo Sharing -->
         <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
             <div>
                 <h3 class="text-sm font-bold text-white mb-1">Grafik Saldo Sharing</h3>
@@ -227,7 +219,8 @@
                 <canvas id="chartSaldoSharing"></canvas>
             </div>
         </div>
-        <!-- Chart 5: Pendapatan Tenda -->
+        
+        <!-- Chart 4: Pendapatan Tenda -->
         <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
             <div>
                 <h3 class="text-sm font-bold text-white mb-1">Grafik Pendapatan Tenda</h3>
@@ -235,16 +228,6 @@
             </div>
             <div class="relative w-40 h-40 mx-auto my-2">
                 <canvas id="chartPendapatanTenda"></canvas>
-            </div>
-        </div>
-        <!-- Chart 6: Umum / Operasional -->
-        <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
-            <div>
-                <h3 class="text-sm font-bold text-white mb-1">Grafik Ringkasan Operasional</h3>
-                <p class="text-xs text-zinc-400 mb-4">Pengeluaran & Setor Perhutani</p>
-            </div>
-            <div class="relative w-40 h-40 mx-auto my-2">
-                <canvas id="pengeluaranChart"></canvas>
             </div>
         </div>
     </div>
@@ -446,11 +429,9 @@
         };
 
         let chartSisaKasInstance = null;
-        let chartKasHarianInstance = null;
-        let chartKasCampingInstance = null;
+        let chartGabunganInstance = null;
         let chartSaldoSharingInstance = null;
         let chartPendapatanTendaInstance = null;
-        let chartPengeluaranInstance = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('entri-tanggal').valueAsDate = new Date();
@@ -681,6 +662,7 @@
 
             let totalSharing = appData.sharingList.reduce((acc, curr) => acc + curr.nominal, 0);
             let totalTendaNominal = appData.tendaList.reduce((acc, curr) => acc + curr.nominal, 0);
+            let totalPengeluaranGabungan = totalPengeluaranKas + totalPengeluaranPendapatan;
             
             let totalKeseluruhanUang = sisaKasHarian + sisaKasCamping + totalSharing + totalTendaNominal + appData.saldoAwal;
 
@@ -704,7 +686,7 @@
             document.getElementById('val-total-formula').innerHTML = `<span>Kas Harian: Rp ${sisaKasHarian.toLocaleString('id-ID')}</span> + <span>Kas Camping: Rp ${sisaKasCamping.toLocaleString('id-ID')}</span> + <span>Sharing: Rp ${totalSharing.toLocaleString('id-ID')}</span> + <span>Tenda: Rp ${totalTendaNominal.toLocaleString('id-ID')}</span> + <span>Saldo Awal: Rp ${appData.saldoAwal.toLocaleString('id-ID')}</span>`;
 
             document.getElementById('val-pendapatan-op').innerText = `Rp ${totalPendapatanOp.toLocaleString('id-ID')}`;
-            document.getElementById('val-total-keluar').innerText = `Rp ${(totalPengeluaranKas + totalPengeluaranPendapatan).toLocaleString('id-ID')}`;
+            document.getElementById('val-total-keluar').innerText = `Rp ${totalPengeluaranGabungan.toLocaleString('id-ID')}`;
             document.getElementById('val-setor-perhutani').innerText = `Rp ${totalSetorPerhutani.toLocaleString('id-ID')}`;
 
             // Render List Transaksi
@@ -735,17 +717,15 @@
                 `).join('');
             }
 
-            renderAllCharts(sisaKasHarian, sisaKasCamping, totalSisaKas, totalSharing, totalTendaNominal, totalPengeluaranKas + totalPengeluaranPendapatan, totalSetorPerhutani, kasHarianMasuk);
+            renderAllCharts(sisaKasHarian, sisaKasCamping, totalSisaKas, totalSharing, totalTendaNominal, totalPengeluaranGabungan);
         }
 
-        function renderAllCharts(sisaHarian, sisaCamping, totalKas, sharingTotal, tendaTotal, pengeluaranTotal, setorTotal, kasHarianMasuk) {
+        function renderAllCharts(sisaHarian, sisaCamping, totalKas, sharingTotal, tendaTotal, pengeluaranTotal) {
             // Destroy existing charts if any
             if (chartSisaKasInstance) chartSisaKasInstance.destroy();
-            if (chartKasHarianInstance) chartKasHarianInstance.destroy();
-            if (chartKasCampingInstance) chartKasCampingInstance.destroy();
+            if (chartGabunganInstance) chartGabunganInstance.destroy();
             if (chartSaldoSharingInstance) chartSaldoSharingInstance.destroy();
             if (chartPendapatanTendaInstance) chartPendapatanTendaInstance.destroy();
-            if (chartPengeluaranInstance) chartPengeluaranInstance.destroy();
 
             // 1. Chart Total Sisa Kas
             const ctx1 = document.getElementById('chartSisaKas').getContext('2d');
@@ -758,31 +738,28 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
             });
 
-            // 2. Chart Kas Harian
-            const ctx2 = document.getElementById('chartKasHarian').getContext('2d');
-            chartKasHarianInstance = new Chart(ctx2, {
+            // 2. Chart Gabungan: Kas Harian, Kas Camping, & Pengeluaran
+            const ctxGabungan = document.getElementById('chartGabunganKasPengeluaran').getContext('2d');
+            chartGabunganInstance = new Chart(ctxGabungan, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Kas Masuk Harian', 'Sisa Kas Harian'],
-                    datasets: [{ data: [kasHarianMasuk > 0 ? kasHarianMasuk : 1, sisaHarian > 0 ? sisaHarian : 0], backgroundColor: ['#60a5fa', '#2563eb'], borderWidth: 0 }]
+                    labels: ['Kas Harian', 'Kas Camping', 'Total Pengeluaran'],
+                    datasets: [{
+                        data: [
+                            sisaHarian > 0 ? sisaHarian : 0, 
+                            sisaCamping > 0 ? sisaCamping : 0, 
+                            pengeluaranTotal > 0 ? pengeluaranTotal : (sisaHarian === 0 && sisaCamping === 0 && pengeluaranTotal === 0 ? 1 : 0)
+                        ],
+                        backgroundColor: ['#3b82f6', '#10b981', '#e11d48'],
+                        borderWidth: 0
+                    }]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
             });
 
-            // 3. Chart Kas Camping
-            const ctx3 = document.getElementById('chartKasCamping').getContext('2d');
-            chartKasCampingInstance = new Chart(ctx3, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Kas Camping'],
-                    datasets: [{ data: [sisaCamping > 0 ? sisaCamping : 1], backgroundColor: ['#34d399'], borderWidth: 0 }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
-            });
-
-            // 4. Chart Saldo Sharing
-            const ctx4 = document.getElementById('chartSaldoSharing').getContext('2d');
-            chartSaldoSharingInstance = new Chart(ctx4, {
+            // 3. Chart Saldo Sharing
+            const ctx3 = document.getElementById('chartSaldoSharing').getContext('2d');
+            chartSaldoSharingInstance = new Chart(ctx3, {
                 type: 'doughnut',
                 data: {
                     labels: ['Saldo Sharing'],
@@ -791,24 +768,13 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
             });
 
-            // 5. Chart Pendapatan Tenda
-            const ctx5 = document.getElementById('chartPendapatanTenda').getContext('2d');
-            chartPendapatanTendaInstance = new Chart(ctx5, {
+            // 4. Chart Pendapatan Tenda
+            const ctx4 = document.getElementById('chartPendapatanTenda').getContext('2d');
+            chartPendapatanTendaInstance = new Chart(ctx4, {
                 type: 'doughnut',
                 data: {
                     labels: ['Pendapatan Tenda'],
                     datasets: [{ data: [tendaTotal > 0 ? tendaTotal : 1], backgroundColor: ['#f59e0b'], borderWidth: 0 }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
-            });
-
-            // 6. Chart Pengeluaran & Setoran
-            const ctx6 = document.getElementById('pengeluaranChart').getContext('2d');
-            chartPengeluaranInstance = new Chart(ctx6, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Pengeluaran', 'Setor Perhutani'],
-                    datasets: [{ data: [pengeluaranTotal > 0 || setorTotal > 0 ? pengeluaranTotal : 1, setorTotal], backgroundColor: ['#e11d48', '#9333ea'], borderWidth: 0 }]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
             });
