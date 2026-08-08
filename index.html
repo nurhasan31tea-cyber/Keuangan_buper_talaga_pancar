@@ -185,23 +185,65 @@
         </div>
     </div>
 
-    <!-- GRAFIK CHART.JS (2 GRID) -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <div class="bg-[#1e1e1e] p-6 rounded-2xl border border-zinc-800 flex flex-col justify-between">
+    <!-- GRAFIK CHART.JS (DETAIL TIAP MENU BERDASARKAN GAMBAR) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+        <!-- Chart 1: Total Sisa Kas -->
+        <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
             <div>
-                <h3 class="text-sm font-bold text-white mb-1">Pendapatan</h3>
-                <p class="text-xs text-zinc-400 mb-6">Berdasarkan sumber pendapatan</p>
+                <h3 class="text-sm font-bold text-white mb-1">Grafik Total Sisa Kas</h3>
+                <p class="text-xs text-zinc-400 mb-4">Komposisi Kas Harian vs Camping</p>
             </div>
-            <div class="relative w-48 h-48 mx-auto my-2">
-                <canvas id="pendapatanChart"></canvas>
+            <div class="relative w-40 h-40 mx-auto my-2">
+                <canvas id="chartSisaKas"></canvas>
             </div>
         </div>
-        <div class="bg-[#1e1e1e] p-6 rounded-2xl border border-zinc-800 flex flex-col justify-between">
+        <!-- Chart 2: Kas Harian -->
+        <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
             <div>
-                <h3 class="text-sm font-bold text-white mb-1">Pengeluaran & Setoran</h3>
-                <p class="text-xs text-zinc-400 mb-6">Beban operasional harian</p>
+                <h3 class="text-sm font-bold text-white mb-1">Grafik Kas Harian (Sisa)</h3>
+                <p class="text-xs text-zinc-400 mb-4">Masuk vs Pengeluaran Harian</p>
             </div>
-            <div class="relative w-48 h-48 mx-auto my-2">
+            <div class="relative w-40 h-40 mx-auto my-2">
+                <canvas id="chartKasHarian"></canvas>
+            </div>
+        </div>
+        <!-- Chart 3: Kas Camping -->
+        <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
+            <div>
+                <h3 class="text-sm font-bold text-white mb-1">Grafik Kas Camping</h3>
+                <p class="text-xs text-zinc-400 mb-4">Akumulasi kas masuk camping</p>
+            </div>
+            <div class="relative w-40 h-40 mx-auto my-2">
+                <canvas id="chartKasCamping"></canvas>
+            </div>
+        </div>
+        <!-- Chart 4: Saldo Sharing -->
+        <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
+            <div>
+                <h3 class="text-sm font-bold text-white mb-1">Grafik Saldo Sharing</h3>
+                <p class="text-xs text-zinc-400 mb-4">Distribusi per periode sharing</p>
+            </div>
+            <div class="relative w-40 h-40 mx-auto my-2">
+                <canvas id="chartSaldoSharing"></canvas>
+            </div>
+        </div>
+        <!-- Chart 5: Pendapatan Tenda -->
+        <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
+            <div>
+                <h3 class="text-sm font-bold text-white mb-1">Grafik Pendapatan Tenda</h3>
+                <p class="text-xs text-zinc-400 mb-4">Rincian pendapatan sewa tenda</p>
+            </div>
+            <div class="relative w-40 h-40 mx-auto my-2">
+                <canvas id="chartPendapatanTenda"></canvas>
+            </div>
+        </div>
+        <!-- Chart 6: Umum / Operasional -->
+        <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
+            <div>
+                <h3 class="text-sm font-bold text-white mb-1">Grafik Ringkasan Operasional</h3>
+                <p class="text-xs text-zinc-400 mb-4">Pengeluaran & Setor Perhutani</p>
+            </div>
+            <div class="relative w-40 h-40 mx-auto my-2">
                 <canvas id="pengeluaranChart"></canvas>
             </div>
         </div>
@@ -403,7 +445,11 @@
             kasManualList: []
         };
 
-        let chartPendapatanInstance = null;
+        let chartSisaKasInstance = null;
+        let chartKasHarianInstance = null;
+        let chartKasCampingInstance = null;
+        let chartSaldoSharingInstance = null;
+        let chartPendapatanTendaInstance = null;
         let chartPengeluaranInstance = null;
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -421,9 +467,7 @@
             document.getElementById('modal-kas-manual').classList.remove('hidden');
         }
 
-        // Fungsi khusus membuka modal kas manual dari dalam modal entri baru
         function bukaModalKasManualDesain() {
-            // Sembunyikan modal entri sementara atau biarkan tertumpuk rapi
             renderListKasManualModal();
             document.getElementById('modal-kas-manual').classList.remove('hidden');
         }
@@ -623,7 +667,6 @@
                 }
             });
 
-            // Hitung kas berdasarkan kategori manual masuk
             let kasHarianMasuk = appData.kasManualList
                 .filter(k => k.kategori === 'Uang Kas Harian')
                 .reduce((acc, curr) => acc + curr.nominal, 0);
@@ -632,7 +675,6 @@
                 .filter(k => k.kategori === 'Uang Kas Camping')
                 .reduce((acc, curr) => acc + curr.nominal, 0);
 
-            // Pengeluaran kas diasumsikan mengurangi kas harian
             let sisaKasHarian = kasHarianMasuk - totalPengeluaranKas;
             let sisaKasCamping = kasCampingMasuk;
             let totalSisaKas = sisaKasHarian + sisaKasCamping;
@@ -693,29 +735,80 @@
                 `).join('');
             }
 
-            renderCharts(totalPendapatanOp, totalPengeluaranKas + totalPengeluaranPendapatan, totalSetorPerhutani);
+            renderAllCharts(sisaKasHarian, sisaKasCamping, totalSisaKas, totalSharing, totalTendaNominal, totalPengeluaranKas + totalPengeluaranPendapatan, totalSetorPerhutani, kasHarianMasuk);
         }
 
-        function renderCharts(pendapatan, pengeluaran, setor) {
-            if (chartPendapatanInstance) chartPendapatanInstance.destroy();
+        function renderAllCharts(sisaHarian, sisaCamping, totalKas, sharingTotal, tendaTotal, pengeluaranTotal, setorTotal, kasHarianMasuk) {
+            // Destroy existing charts if any
+            if (chartSisaKasInstance) chartSisaKasInstance.destroy();
+            if (chartKasHarianInstance) chartKasHarianInstance.destroy();
+            if (chartKasCampingInstance) chartKasCampingInstance.destroy();
+            if (chartSaldoSharingInstance) chartSaldoSharingInstance.destroy();
+            if (chartPendapatanTendaInstance) chartPendapatanTendaInstance.destroy();
             if (chartPengeluaranInstance) chartPengeluaranInstance.destroy();
 
-            const ctx1 = document.getElementById('pendapatanChart').getContext('2d');
-            chartPendapatanInstance = new Chart(ctx1, {
+            // 1. Chart Total Sisa Kas
+            const ctx1 = document.getElementById('chartSisaKas').getContext('2d');
+            chartSisaKasInstance = new Chart(ctx1, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Pendapatan Operasional'],
-                    datasets: [{ data: [pendapatan > 0 ? pendapatan : 1], backgroundColor: ['#2563eb'], borderWidth: 0 }]
+                    labels: ['Kas Harian', 'Kas Camping'],
+                    datasets: [{ data: [sisaHarian > 0 ? sisaHarian : (totalKas === 0 ? 1 : 0), sisaCamping > 0 ? sisaCamping : 0], backgroundColor: ['#3b82f6', '#10b981'], borderWidth: 0 }]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
             });
 
-            const ctx2 = document.getElementById('pengeluaranChart').getContext('2d');
-            chartPengeluaranInstance = new Chart(ctx2, {
+            // 2. Chart Kas Harian
+            const ctx2 = document.getElementById('chartKasHarian').getContext('2d');
+            chartKasHarianInstance = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Kas Masuk Harian', 'Sisa Kas Harian'],
+                    datasets: [{ data: [kasHarianMasuk > 0 ? kasHarianMasuk : 1, sisaHarian > 0 ? sisaHarian : 0], backgroundColor: ['#60a5fa', '#2563eb'], borderWidth: 0 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
+            });
+
+            // 3. Chart Kas Camping
+            const ctx3 = document.getElementById('chartKasCamping').getContext('2d');
+            chartKasCampingInstance = new Chart(ctx3, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Kas Camping'],
+                    datasets: [{ data: [sisaCamping > 0 ? sisaCamping : 1], backgroundColor: ['#34d399'], borderWidth: 0 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
+            });
+
+            // 4. Chart Saldo Sharing
+            const ctx4 = document.getElementById('chartSaldoSharing').getContext('2d');
+            chartSaldoSharingInstance = new Chart(ctx4, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Saldo Sharing'],
+                    datasets: [{ data: [sharingTotal > 0 ? sharingTotal : 1], backgroundColor: ['#059669'], borderWidth: 0 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
+            });
+
+            // 5. Chart Pendapatan Tenda
+            const ctx5 = document.getElementById('chartPendapatanTenda').getContext('2d');
+            chartPendapatanTendaInstance = new Chart(ctx5, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pendapatan Tenda'],
+                    datasets: [{ data: [tendaTotal > 0 ? tendaTotal : 1], backgroundColor: ['#f59e0b'], borderWidth: 0 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
+            });
+
+            // 6. Chart Pengeluaran & Setoran
+            const ctx6 = document.getElementById('pengeluaranChart').getContext('2d');
+            chartPengeluaranInstance = new Chart(ctx6, {
                 type: 'doughnut',
                 data: {
                     labels: ['Pengeluaran', 'Setor Perhutani'],
-                    datasets: [{ data: [pengeluaran, setor], backgroundColor: ['#e11d48', '#9333ea'], borderWidth: 0 }]
+                    datasets: [{ data: [pengeluaranTotal > 0 || setorTotal > 0 ? pengeluaranTotal : 1, setorTotal], backgroundColor: ['#e11d48', '#9333ea'], borderWidth: 0 }]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
             });
