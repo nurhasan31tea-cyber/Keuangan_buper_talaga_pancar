@@ -185,7 +185,7 @@
         </div>
     </div>
 
-    <!-- GRAFIK CHART.JS (DENGAN GRAFIK GABUNGAN KAS HARIAN, CAMPING, & PENGELUARAN) -->
+    <!-- GRAFIK CHART.JS -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         <!-- Chart 1: Total Sisa Kas -->
         <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
@@ -209,13 +209,13 @@
             </div>
         </div>
 
-        <!-- Chart 3: Saldo Sharing -->
-        <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between">
+        <!-- Chart 3: Grafik Batang Pendapatan Sharing Per Bulan Per Periode -->
+        <div class="bg-[#1e1e1e] p-5 rounded-2xl border border-zinc-800 flex flex-col justify-between md:col-span-2 lg:col-span-1">
             <div>
-                <h3 class="text-sm font-bold text-white mb-1">Grafik Saldo Sharing</h3>
-                <p class="text-xs text-zinc-400 mb-4">Distribusi per periode sharing</p>
+                <h3 class="text-sm font-bold text-white mb-1">Grafik Pendapatan Sharing</h3>
+                <p class="text-xs text-zinc-400 mb-4">Perbandingan tiap bulan per periode (Bar Chart)</p>
             </div>
-            <div class="relative w-40 h-40 mx-auto my-2">
+            <div class="relative w-full h-48 mx-auto my-2">
                 <canvas id="chartSaldoSharing"></canvas>
             </div>
         </div>
@@ -583,7 +583,7 @@
         function simpanSharing(e) {
             e.preventDefault();
             const periode = document.getElementById('sharing-periode').value;
-            const bulan = document.getElementById('sharing-bulan').value;
+            const bulan = document.getElementById('sharing-bulan').value.trim();
             const nominal = parseFloat(document.getElementById('sharing-nominal').value) || 0;
 
             appData.sharingList.push({ id: Date.now(), periode, bulan, nominal });
@@ -717,10 +717,10 @@
                 `).join('');
             }
 
-            renderAllCharts(sisaKasHarian, sisaKasCamping, totalSisaKas, totalSharing, totalTendaNominal, totalPengeluaranGabungan);
+            renderAllCharts(sisaKasHarian, sisaKasCamping, totalSisaKas, totalTendaNominal, totalPengeluaranGabungan);
         }
 
-        function renderAllCharts(sisaHarian, sisaCamping, totalKas, sharingTotal, tendaTotal, pengeluaranTotal) {
+        function renderAllCharts(sisaHarian, sisaCamping, totalKas, tendaTotal, pengeluaranTotal) {
             // Destroy existing charts if any
             if (chartSisaKasInstance) chartSisaKasInstance.destroy();
             if (chartGabunganInstance) chartGabunganInstance.destroy();
@@ -757,15 +757,93 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
             });
 
-            // 3. Chart Saldo Sharing
+            // 3. Chart Bar Pendapatan Sharing per Bulan per Periode
+            // Mengelompokkan data sharing berdasarkan bulan, lalu memisahkan Periode 1 dan Periode 2
+            let bulanSet = [...new Set(appData.sharingList.map(s => s.bulan))];
+            if (bulanSet.length === 0) bulanSet = ['Belum Ada Data'];
+
+            let dataPeriode1 = bulanSet.map(b => {
+                if (b === 'Belum Ada Data') return 0;
+                let found = appData.sharingList.find(s => s.bulan === b && s.periode.includes('Periode 1'));
+                return found ? found.nominal : 0;
+            });
+
+            let dataPeriode2 = bulanSet.map(b => {
+                if (b === 'Belum Ada Data') return 0;
+                let found = appData.sharingList.find(s => s.bulan === b && s.periode.includes('Periode 2'));
+                return found ? found.nominal : 0;
+            });
+
             const ctx3 = document.getElementById('chartSaldoSharing').getContext('2d');
             chartSaldoSharingInstance = new Chart(ctx3, {
-                type: 'doughnut',
+                type: 'bar',
                 data: {
-                    labels: ['Saldo Sharing'],
-                    datasets: [{ data: [sharingTotal > 0 ? sharingTotal : 1], backgroundColor: ['#059669'], borderWidth: 0 }]
+                    labels: bulanSet,
+                    datasets: [
+                        {
+                            label: 'Periode 1 (Tengah Bulan)',
+                            data: dataPeriode1,
+                            backgroundColor: '#10b981',
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'Periode 2 (Akhir Bulan)',
+                            data: dataPeriode2,
+                            backgroundColor: '#3b82f6',
+                            borderRadius: 6
+                        }
+                    ]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                            labels: {
+                                color: '#a1a1aa',
+                                boxWidth: 12,
+                                font: { size: 11 }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += 'Rp ' + context.parsed.y.toLocaleString('id-ID');
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#a1a1aa', font: { size: 11 } }
+                        },
+                        y: {
+                            grid: { color: '#27272a' },
+                            ticks: {
+                                color: '#a1a1aa',
+                                font: { size: 10 },
+                                callback: function(value) {
+                                    if (value >= 1000000) {
+                                        return (value / 1000000) + 'jt';
+                                    } else if (value >= 1000) {
+                                        return (value / 1000) + 'rb';
+                                    }
+                                    return value;
+                                }
+                            }
+                        }
+                    }
+                }
             });
 
             // 4. Chart Pendapatan Tenda
